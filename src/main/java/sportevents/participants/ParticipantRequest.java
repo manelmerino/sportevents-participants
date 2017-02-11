@@ -1,34 +1,14 @@
 package sportevents.participants;
 
 import java.sql.Date;
-import java.sql.Timestamp;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-//enum Genere {
-//    Home, Dona
-//}
-
-@Entity
-public class Participant {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    private Timestamp createdAt;
-
-    private Timestamp updatedAt;
-
+public class ParticipantRequest {
     private String taxId;
 
-    private Date birthday;
+    private String birthday;
 
     private String name;
 
@@ -52,53 +32,6 @@ public class Participant {
 
     private String email;
 
-    private boolean active;
-
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the createdAt
-     */
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    /**
-     * @param createdAt
-     *            the createdAt to set
-     */
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    /**
-     * @return the updatedAt
-     */
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
-    }
-
-    /**
-     * @param updatedAt
-     *            the updatedAt to set
-     */
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     /**
      * @return the taxId
      */
@@ -117,7 +50,7 @@ public class Participant {
     /**
      * @return the birthday
      */
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
@@ -125,7 +58,7 @@ public class Participant {
      * @param birthday
      *            the birthday to set
      */
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
@@ -294,19 +227,62 @@ public class Participant {
         this.email = email;
     }
 
-    /**
-     * @return the active
-     */
-    public boolean isActive() {
-        return active;
+    public boolean isValid() {
+        if ((taxId == null) || taxId.isEmpty()) {
+            return false;
+        }
+        if ((birthday == null) || birthday.isEmpty()) {
+            return false;
+        }
+        if ((name == null) || name.isEmpty()) {
+            return false;
+        }
+        if ((firstSurname == null) || firstSurname.isEmpty()) {
+            return false;
+        }
+        if ((secondSurname == null) || secondSurname.isEmpty()) {
+            return false;
+        }
+        if ((gender == null) || gender.isEmpty()) {
+            return false;
+        }
+        if ((address == null) || address.isEmpty()) {
+            return false;
+        }
+        if ((zipCode == null) || zipCode.isEmpty()) {
+            return false;
+        }
+        if ((city == null) || city.isEmpty()) {
+            return false;
+        }
+        if ((personalPhone == null) || personalPhone.isEmpty()) {
+            return false;
+        }
+        if ((email == null) || email.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 
-    /**
-     * @param active
-     *            the active to set
-     */
-    public void setActive(boolean active) {
-        this.active = active;
+    public Participant generateParticipant() {
+        Participant participant = new Participant();
+
+        participant.setTaxId(this.getTaxId());
+        participant.setBirthday(Date.valueOf(this.getBirthday()));
+        participant.setName(this.getName());
+        participant.setFirstSurname(this.getFirstSurname());
+        participant.setSecondSurname(this.getSecondSurname());
+        participant.setGender(this.getGender());
+        participant.setAddress(this.getAddress());
+        participant.setZipCode(this.getZipCode());
+        participant.setCity(this.getCity());
+        participant.setCountry(this.getCountry());
+        participant.setPersonalPhone(this.getPersonalPhone());
+        participant.setEmergencyPhone(this.getEmergencyPhone());
+        participant.setEmail(this.getEmail());
+
+        return participant;
     }
 
     @Override
@@ -321,21 +297,4 @@ public class Participant {
         }
     }
 
-    public Participant fillForInsertion() {
-        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-        this.setCreatedAt(currentTimestamp);
-        this.setUpdatedAt(currentTimestamp);
-        this.setActive(true);
-
-        return this;
-    }
-
-    public Participant fillForUpdate(Participant participant) {
-        this.setCreatedAt(participant.getCreatedAt());
-        this.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        this.setActive(participant.isActive());
-        this.setId(participant.getId());
-
-        return this;
-    }
 }
